@@ -1,0 +1,85 @@
+name: Android Private Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release Tag (z.B. v1.0.0)'
+        required: true
+      release_name:
+        description: 'Release Name (z.B. Goku 1.0.0)'
+        required: true
+      release_notes:
+        description: 'Kurze Release-Notizen'
+        required: false
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-sign-release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write    # Für das Erstellen des Releases
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Decode keystore from secret
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > $HOME/release-keystore.jks
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+
+      - name: Prepare gradle.properties for signing
+        run: |
+          cat <<EOF >> $HOME/gradle.properties
+          MYAPP_STORE_FILE=$HOME/release-keystore.jks
+          MYAPP_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          MYAPP_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}
+          MYAPP_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}
+          EOF
+
+      - name: Set Gradle user home
+        run: echo "GRADLE_USER_HOME=$HOME/.gradle" >> $GITHUB_ENV
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Build release APK
+        run: ./gradlew clean assembleRelease --no-daemon
+        env:
+          ORG_GRADLE_PROJECT_MAYAPP_STORE_FILE: $HOME/release-keystore.jks
+
+      - name: Find APK path
+        id: find_apk
+        run: |
+          APK_PATH=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
+          echo "apk_path=$APK_PATH" >> $GITHUB_OUTPUT
+
+      - name: Upload APK as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: ${{ steps.find_apk.outputs.apk_path }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || github.ref_name }}
+          name: ${{ github.event_name == 'workflow_dispatch' && inputs.release_name || github.ref_name }}
+          body: ${{ github.event_name == 'workflow_dispatch' && inputs.release_notes || 'Automatischer Release' }}
+          draft: false
+          prerelease: false
+          files: ${{ steps.find_apk.outputs.apk_path }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

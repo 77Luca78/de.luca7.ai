@@ -1,0 +1,19 @@
+groovy
+android {
+    signingConfigs {
+        release {
+            storeFile file(System.getProperty("MYAPPSTOREFILE", System.getenv("MYAPPSTOREFILE") ?: ""))
+            storePassword System.getProperty("MYAPPSTOREPASSWORD")
+            keyAlias System.getProperty("MYAPPKEYALIAS")
+            keyPassword System.getProperty("MYAPPKEYPASSWORD")
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+}
+`

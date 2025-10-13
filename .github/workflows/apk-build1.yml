@@ -1,0 +1,16 @@
+- name: 'Send APK download link via email'
+  if: success() # nur bei erfolgreichem Build
+  uses: dawidd6/action-send-mail@v3
+  with:
+    server_address: smtp.gmx.net
+    server_port: 587
+    username: g.catania77@gmx.de
+    password: ${{ secrets.GMX_PASSWORD }} # Lege dein GMX-Mailpasswort als Secret im Repo an!
+    subject: 'APK-Build erfolgreich: Luca AI App'
+    to: g.catania77@gmx.de
+    from: g.catania77@gmx.de
+    body: |
+      Der APK-Build ist abgeschlossen!
+      Lade die APK hier herunter:
+      ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      (Unter "Artifacts" findest du die APK zum Download.)

@@ -1,0 +1,23 @@
+release:
+    name: GitHub Release erstellen
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+    - name: Code auschecken
+      uses: actions/checkout@v3
+
+    - name: Release-APK herunterladen
+      uses: actions/download-artifact@v3
+      with:
+        name: LucaAI-release-apk
+        path: ./release-apk
+
+    - name: GitHub Release veröffentlichen
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Release ${{ github.ref_name }}
+        tag_name: ${{ github.ref_name }}
+        files: ./release-apk/app-release.apk
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

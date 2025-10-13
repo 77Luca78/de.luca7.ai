@@ -1,0 +1,94 @@
+<div class="download-section">
+  <h2>App herunterladen</h2>
+  <p>Installieren Sie die Luca AI App auf Ihrem Android-Gerät</p>
+  <!-- Echten Link einfügen -->
+  <a href="apk/luca-ai-v1.0.0.apk" class="download-btn" onclick="simulateDownload(event)">APK herunterladen (v1.0.0)</a>
+  <p class="file-info">Dateigröße: 78.5 MB | Unterstützt: Android 8.0+</p>
+</div>
+
+<div class="instructions">
+  <h2>Installationsanleitung</h2>
+  <div class="step"><div class="step-number">1</div><div>Laden Sie die APK-Datei über den Download-Button herunter</div></div>
+  <div class="step"><div class="step-number">2</div><div>Aktivieren Sie "Unbekannte Quellen" in den Einstellungen Ihres Android-Geräts unter "Sicherheit"</div></div>
+  <div class="step"><div class="step-number">3</div><div>Öffnen Sie die heruntergeladene APK-Datei und folgen Sie den Installationsanweisungen</div></div>
+  <div class="step"><div class="step-number">4</div><div>Starten Sie die App und geben Sie den PIN <strong>0077</strong> ein</div></div>
+  <div class="step"><div class="step-number">5</div><div>Wählen Sie Ihre bevorzugte KI-Persönlichkeit aus und beginnen Sie zu chatten</div></div>
+</div>
+
+<div class="warnings">
+  <h3>Wichtige Hinweise</h3>
+  <p>Für die Installation müssen Sie "Installation aus unbekannten Quellen" aktivieren. Dies finden Sie in den Einstellungen unter Sicherheit.</p>
+  <p>Die App benötigt Berechtigungen für Mikrofon, Kamera und Speicher, um alle Funktionen nutzen zu können.</p>
+</div>
+
+<h2 style="text-align: center; margin: 40px 0 30px;">App-Funktionen</h2>
+<div class="features">
+  <div class="feature"><div class="feature-icon">👥</div><h3>20 KI-Persönlichkeiten</h3><p>Wählen Sie aus 20 einzigartigen weiblichen KI-Persönlichkeiten mit unterschiedlichen Charakteren und Gesprächsthemen</p></div>
+  <div class="feature"><div class="feature-icon">🎨</div><h3>Bildgenerierung</h3><p>Generieren Sie personalisierte Bilder basierend auf Ihren Gesprächen und Vorlieben</p></div>
+  <div class="feature"><div class="feature-icon">🎥</div><h3>Videogenerierung</h3><p>Erstellen Sie einzigartige Videos mit Hilfe der KI</p></div>
+  <div class="feature"><div class="feature-icon">🔒</div><h3>PIN-Geschützt</h3><p>Ihre privaten Gespräche bleiben mit PIN 0077 geschützt</p></div>
+  <div class="feature"><div class="feature-icon">🎵</div><h3>Sprachausgabe</h3><p>Realistische Sprachaus[43dcd9a7-70db-4a1f-b0ae-981daa162054](https://github.com/hd-code/pandoc-docker/tree/07f83c6deeafbff1710c5f7992a97955c298ad61/example%2Fexample.md?citationMarker=43dcd9a7-70db-4a1f-b0ae-981daa162054&citationId=1 "github.com")# Goku<title>Luca AI App Download</title> <style> body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; min-height: 100vh; } .container { background: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 15px; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); } h1 { text-align: center; margin-bottom: 30px; } .download-btn { display: block; width: 100%; padding: 15px; background: #4CAF50; color: white; text-align: center; border-radius: 8px; text-decoration: none; font-size: 18px; font-weight: bold; margin: 20px 0; transition: background 0.3s; } .download-btn:hover { background: #45a049; } .steps { background: rgba(255, 255, 255, 0.15); padding: 20px; border-radius: 10px; margin: 20px 0; } .step { margin-bottom: 15px; display: flex; align-items: flex-start; } .step-number { background: #FF6B6B; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; } .warning { background: rgba(255, 165, 0, 0.2); border-left: 4px solid orange; padding: 15px; margin: 20px 0; border-radius: 4px; } .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0; } .feature { background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 8px; text-align: center; } </style>
+Luca AI App Installation
+    <div class="steps">
+        <h2>Installationsanleitung:</h2>
+        <div class="step">
+            <div class="step-number">1</div>
+            <div>Laden Sie die APK-Datei herunter</div>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <div>Aktivieren Sie "Unbekannte Quellen" in den Einstellungen</div>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <div>Öffnen Sie die heruntergeladene APK-Datei</div>
+        </div>
+        <div class="step">
+            <div class="step-number">4</div>
+            <div>Folgen Sie den Installationsanweisungen</div>
+        </div>
+        <div class="step">
+            <div class="step-number">5</div>
+            <div>Starten Sie die App und geben Sie den PIN 0077 ein</div>
+        </div>
+    </div>
+
+    <div class="warning">
+        <strong>Wichtig:</strong> Für die Installation müssen Sie "Installation aus unbekannten Quellen" aktivieren.
+        Dies finden Sie in den Einstellungen unter Sicherheit.
+    </div>
+
+    <h2>App-Funktionen:</h2>
+    <div class="features">
+        <div class="feature">20 KI-Persönlichkeiten</div>
+        <div class="feature">Sprachausgabe</div>
+        <div class="feature">Bildgenerierung</div>
+        <div class="feature">Videogenerierung</div>
+        <div class="feature">Websuche</div>
+        <div class="feature">PIN-Geschützt</div>
+    </div>
+
+    <!-- Simulierter Download-Button -->
+    <a href="#" class="download-btn" onclick="simulateDownload()">Luca AI APK Herunterladen (v1.0.0)</a>
+    
+    <p>Dateigröße: 78.5 MB | Version: 1.0.0 | Unterstützt: Android 8.0+</p>
+    
+    <div id="download-message" style="display: none; background: rgba(0, 255, 0, 0.2); padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+        Download gestartet! Prüfen Sie Ihre Downloads.
+    </div>
+</div>
+
+<script>
+    function simulateDownload() {
+        document.getElementById('download-message').style.display = 'block';
+        
+        // In einer echten Umgebung würde hier der echte Download-Link stehen
+        // window.location.href = '
+<a href="#" class="download-btn" onclick="simulateDownload()">Luca AI APK Herunterladen (v1.0.0)</a>';
+        
+        // Für Testzwecke können wir eine kleine Wartezeit simulieren
+        setTimeout(function() {
+            alert('In einer echten Umgebung würde der Download jetzt starten. Da dies eine Simulation ist, müssen Sie die APK manuell von Ihrem Computer auf das Handy transferieren.');
+        }, 1000);
+    }
+</script>

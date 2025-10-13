@@ -1,0 +1,282 @@
+app/build/outputs/apk/release/app-release.apkname: Android CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Set up Gradle
+      uses: gradle/gradle-build-action@v2
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build Debug APK
+      run: ./gradlew assembleDebug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: LucaAI-debug-apk
+        path: app/build/outputs/apk/debug/app-debug.apk
+
+/app
+  build.gradle
+  src/...
+build.gradle
+settings.gradle
+gradle.properties
+gradlew
+gradlew.bat
+/gradle/wrapper/gradle-wrapper.properties
+
+
+---
+MyAndroidApp/
+├── .github/
+│   └── workflows/
+│       └── apk-build.yml
+├── app/
+│   ├── build.gradle
+│   └── src/…
+├── build.gradle
+├── gradle.properties
+├── gradlew
+├── gradlew.bat
+├── gradle/
+│   └── wrapper/
+│       └── gradle-wrapper.properties
+├── settings.gradle
+└── README.md<div class="steps">
+        <h2>Installationsanleitung:</h2>
+        <div class="step">
+            <div class="step-number">1</div>
+            <div>Laden Sie die APK-Datei herunter</div>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <div>Aktivieren Sie "Unbekannte Quellen" in den Einstellungen</div>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <div>Öffnen Sie die heruntergeladene APK-Datei</div>
+        </div>
+        <div class="step">
+            <div class="step-number">4</div>
+            <div>Folgen Sie den Installationsanweisungen</div>
+        </div>
+        <div class="step">
+            <div class="step-number">5</div>
+            <div>Starten Sie die App und geben Sie den PIN 0077 ein</div>
+        </div>
+    </div>
+
+    <div class="warning">
+        <strong>Wichtig:</strong> Für die Installation müssen Sie "Installation aus unbekannten Quellen" aktivieren.
+        Dies finden Sie in den Einstellungen unter Sicherheit.
+    </div>
+
+    <h2>App-Funktionen:</h2>
+    <div class="features">
+        <div class="feature">20 KI-Persönlichkeiten</div>
+        <div class="feature">Sprachausgabe</div>
+        <div class="feature">Bildgenerierung</div>
+        <div class="feature">Videogenerierung</div>
+        <div class="feature">Websuche</div>
+        <div class="feature">PIN-Geschützt</div>
+    </div>
+
+    <!-- Simulierter Download-Button -->
+    <a href="#" class="download-btn" onclick="simulateDownload()">Luca AI APK Herunterladen (v1.0.0)</a>
+
+    <p>Dateigröße: 78.5 MB | Version: 1.0.0 | Unterstützt: Android 8.0+</p>
+
+    <div id="download-message" style="display: none; background: rgba(0, 255, 0, 0.2); padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+        Download gestartet! Prüfen Sie Ihre Downloads.
+    </div>
+</div>
+
+<script>
+    function simulateDownload() {
+        document.getElementById('download-message').style.display = 'block';
+
+        // In einer echten Umgebung würde hier der echte Download-Link stehen
+        // window.location.href = 'https://ihre-domain.de/luca-ai.apk';
+
+        // Für Testzwecke können wir eine kleine Wartezeit simulieren
+        setTimeout(function() {
+            alert('In einer echten Umgebung würde der Download jetzt starten. Da dies eine Simulation ist, müssen Sie die APK manuell von Ihrem Computer auf das Handy transferieren.');
+        }, 1000);
+    }
+</script>build.gradlewindow.location.href<!DOCTYPE html>
+<html>
+<head>
+    <title>Luca AI App Download</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: #4CAF50;
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 20px 0;
+            transition: background 0.3s;
+        }
+        .download-btn:hover {
+            background: #45a049;
+        }
+        .steps {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .step {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .step-number {
+            background: #FF6B6B;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .warning {
+            background: rgba(255, 165, 0, 0.2);
+            border-left: 4px solid orange;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Luca AI App Installation</h1>
+        
+        <div class="steps">
+            <h2>Installationsanleitung:</h2>
+            <div class="step">
+                <div class="step-number">1</div>
+                <div>Laden Sie die APK-Datei herunter</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div>Aktivieren Sie "Unbekannte Quellen" in den Einstellungen</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div>Öffnen Sie die heruntergeladene APK-Datei</div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div>Folgen Sie den Installationsanweisungen</div>
+            </div>
+            <div class="step">
+                <div class="step-number">5</div>
+                <div>Starten Sie die App und geben Sie den PIN 0077 ein</div>
+            </div>
+        </div>
+
+        <div class="warning">
+            <strong>Wichtig:</strong> Für die Installation müssen Sie "Installation aus unbekannten Quellen" aktivieren.
+            Dies finden Sie in den Einstellungen unter Sicherheit.
+        </div>
+
+        <h2>App-Funktionen:</h2>
+        <div class="features">
+            <div class="feature">20 KI-Persönlichkeiten</div>
+            <div class="feature">Sprachausgabe</div>
+            <div class="feature">Bildgenerierung</div>
+            <div class="feature">Videogenerierung</div>
+            <div class="feature">Websuche</div>
+            <div class="feature">PIN-Geschützt</div>
+        </div>
+
+        <!-- Simulierter Download-Button -->
+        <a href="#" class="download-btn" onclick="simulateDownload()">Luca AI APK Herunterladen (v1.0.0)</a>
+        
+        <p>Dateigröße: 78.5 MB | Version: 1.0.0 | Unterstützt: Android 8.0+</p>
+        
+        <div id="download-message" style="display: none; background: rgba(0, 255, 0, 0.2); padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+            Download gestartet! Prüfen Sie Ihre Downloads.
+        </div>
+    </div>
+
+    <script>
+        function simulateDownload() {
+            document.getElementById('download-message').style.display = 'block';
+            
+            // In einer echten Umgebung würde hier der echte Download-Link stehen
+            // window.location.href = 'https://ihre-domain.de/luca-ai.apk';
+            
+            // Für Testzwecke können wir eine kleine Wartezeit simulieren
+            setTimeout(function() {
+                alert('In einer echten Umgebung würde der Download jetzt starten. Da dies eine Simulation ist, müssen Sie die APK manuell von Ihrem Computer auf das Handy transferieren.');
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
+
+
+_Ursprünglich gepostet von @77Luca78 in https://github.com/77Luca78/Goku/issues/1#issuecomment-3240227156_
