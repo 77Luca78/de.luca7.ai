@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#6d5dfc">
+  <meta name="color-scheme" content="light">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Luca AI">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="description" content="Luca AI – lokaler Offline-MVP mit PIN, Persönlichkeiten und Demo-Chat.">
+  
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+
+  <title>Luca AI</title>
+  <style>
+    :root {
+      --bg-1:#5a67f2; --bg-2:#9b51e0; --ink:#20212a; --muted:#666b7a;
+      --card:rgba(255,255,255,.96); --primary:#6558f5; --primary-2:#8b5cf6;
+      --danger:#b3261e; --warn:#fff4ce; --warn-ink:#5f4700; --line:#e7e8ef;
+      --assistant:#f1f2f7; --user:#6558f5; --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink)}
+    body{
+      background:linear-gradient(145deg,var(--bg-1),var(--bg-2));
+      min-height:100dvh;
+      padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    }
+    button,input,textarea{font:inherit}
+    button{min-height:46px;cursor:pointer}
+    button:focus-visible,input:focus-visible,textarea:focus-visible,.persona:focus-visible{
+      outline:4px solid rgba(255,214,64,.95); outline-offset:3px;
+    }
+    .app{max-width:1180px;margin:auto;min-height:100dvh}
+    .screen{display:none;min-height:100dvh;padding:24px}
+    .screen.active{display:flex;flex-direction:column}
+    .center{justify-content:center}
+    .brand{text-align:center;color:white;margin-bottom:22px}
+    .logo{
+      width:96px;height:96px;border-radius:28px;margin:0 auto 15px;
+      display:grid;place-items:center;font-weight:900;font-size:44px;color:#fff;
+      background:linear-gradient(135deg,#ff6b7a,#8b5cf6);box-shadow:0 18px 42px rgba(33,24,92,.3)
+    }
+    h1,h2,h3,p{margin-top:0}
+    .brand h1{font-size:clamp(2.2rem,8vw,3.4rem);margin-bottom:5px}
+    .brand p{opacity:.94}
+    .card{
+      background:var(--card);border-radius:var(--radius);padding:22px;
+      box-shadow:0 22px 60px rgba(29,20,86,.25);
+    }
+    .field{display:flex;flex-direction:column;gap:7px;margin:14px 0}
+    .field label{font-weight:750}
+    input,textarea{
+      width:100%;border:2px solid var(--line);border-radius:14px;padding:13px 14px;
+      background:#fff;color:var(--ink);font-size:17px
+    }
+    input:focus,textarea:focus{border-color:var(--primary)}
+    .btn{
+      border:0;border-radius:14px;padding:12px 18px;font-weight:800;
+      display:inline-flex;align-items:center;justify-content:center;gap:8px
+    }
+    .btn.primary{color:white;background:linear-gradient(135deg,var(--primary),var(--primary-2));width:100%}
+    .btn.secondary{color:#4f46a5;background:#efefff}
+    .btn.ghost{color:#4f46a5;background:transparent;border:2px solid #dcdafa}
+    .btn.danger{color:white;background:#b3261e}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .error{display:none;color:var(--danger);font-weight:750;margin:8px 0}
+    .error.show{display:block}
+    .note{font-size:.92rem;color:var(--muted);line-height:1.45}
+    .top{
+      color:white;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px
+    }
+    .top h2{margin:0;font-size:clamp(1.7rem,6vw,2.4rem)}
+    .personas{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:13px}
+    .persona{
+      border:0;text-align:left;background:var(--card);border-radius:18px;padding:17px;
+      display:grid;grid-template-columns:56px 1fr 20px;gap:13px;align-items:center;
+      box-shadow:0 10px 28px rgba(29,20,86,.17);transition:transform .15s ease
+    }
+    .persona:hover{transform:translateY(-2px)}
+    .persona .emoji{font-size:34px}
+    .persona strong{display:block;font-size:1.08rem;margin-bottom:3px}
+    .persona span{color:var(--muted);font-size:.93rem}
+    .persona .arrow{color:var(--primary);font-size:28px}
+    .status{
+      background:var(--warn);color:var(--warn-ink);padding:10px 14px;font-weight:750;
+      text-align:center;border-bottom:1px solid #ecd77b
+    }
+    #chatScreen{padding:0;background:#fff}
+    .chatTop{
+      padding:calc(12px + env(safe-area-inset-top)) 14px 12px;
+      background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;
+      display:flex;align-items:center;gap:12px
+    }
+    .chatTitle{flex:1}
+    .chatTitle strong{display:block;font-size:1.15rem}
+    .chatTitle small{opacity:.9}
+    .messages{
+      flex:1;overflow:auto;padding:16px;background:#fafafe;
+      display:flex;flex-direction:column;gap:11px;min-height:0
+    }
+    .msg{display:flex}.msg.user{justify-content:flex-end}
+    .bubble{
+      max-width:min(78%,580px);padding:11px 14px;border-radius:18px;line-height:1.45;
+      white-space:pre-wrap;overflow-wrap:anywhere
+    }
+    .msg.assistant .bubble{background:var(--assistant);border-bottom-left-radius:5px}
+    .msg.user .bubble{background:var(--user);color:#fff;border-bottom-right-radius:5px}
+    .composer{
+      display:flex;gap:9px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+      background:#fff;border-top:1px solid var(--line);align-items:flex-end
+    }
+    .composer textarea{resize:none;min-height:48px;max-height:130px}
+    .composer .btn{width:auto;min-width:88px}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+    .small{font-size:.88rem}
+    .hidden{display:none!important}
+    dialog{
+      border:0;border-radius:20px;padding:0;max-width:520px;width:calc(100% - 30px);
+      box-shadow:0 25px 80px rgba(0,0,0,.35)
+    }
+    dialog::backdrop{background:rgba(20,18,48,.55)}
+    dialog .card{box-shadow:none}
+
+    .install-hint{
+      display:none;background:rgba(255,255,255,.96);color:var(--ink);
+      border:1px solid rgba(101,88,245,.22);border-radius:18px;padding:14px 16px;
+      margin:0 auto 16px;max-width:720px;box-shadow:0 12px 35px rgba(29,20,86,.16)
+    }
+    .install-hint.show{display:block}
+    .install-hint strong{display:block;margin-bottom:4px}
+    .install-hint .row{margin-top:10px}
+    .install-steps{margin:12px 0 0;padding-left:22px;color:var(--muted)}
+    .install-steps li{margin:7px 0}
+    .ipad-badge{
+      display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;
+      background:rgba(255,255,255,.18);color:white;font-weight:750;font-size:.9rem;
+      backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)
+    }
+    @supports (-webkit-touch-callout:none){
+      input,textarea{font-size:17px}
+      .btn,.persona{-webkit-tap-highlight-color:transparent}
+    }
+    @media (min-width:768px){
+      .screen{padding:34px}
+      .card{padding:28px}
+      #pinScreen .card{width:min(540px,100%);margin-inline:auto}
+      .personas{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+      .persona{min-height:108px;padding:20px}
+      .chatTop{padding-inline:22px}
+      .messages{padding:24px}
+      .composer{padding-inline:20px}
+    }
+    @media (min-width:1024px) and (orientation:landscape){
+      .personas{grid-template-columns:repeat(3,minmax(0,1fr))}
+      #chatScreen{
+        min-height:calc(100dvh - 38px);margin:19px;border-radius:26px;overflow:hidden;
+        box-shadow:0 25px 80px rgba(29,20,86,.30)
+      }
+      .messages{font-size:1.04rem}
+      .bubble{max-width:min(70%,680px)}
+    }
+
+    @media(max-width:520px){
+      .screen{padding:18px}
+      .card{padding:19px}
+      .composer{align-items:stretch}
+      .composer .btn{min-width:72px;padding-inline:12px}
+      .bubble{max-width:88%}
+    }
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+<main class="app" aria-live="polite">
+
+  <section id="pinScreen" class="screen center active" aria-labelledby="pinHeading">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">L</div>
+      <h1>Luca AI</h1>
+      <p id="pinSubtitle">Deine persönliche Begleitung – lokal und offline.</p>
+      <span class="ipad-badge">✓ Für iPad Pro optimiert</span>
+    </div>
+
+    <div id="installHint" class="install-hint" role="status">
+      <strong>📱 Auf deinem iPad Pro installieren</strong>
+      <span>In Safari auf <b>Teilen</b> tippen → <b>Zum Home-Bildschirm</b> → <b>Als Web-App öffnen</b>.</span>
+      <div class="row">
+        <button id="installHelpButton" class="btn secondary" type="button">Schritte anzeigen</button>
+        <button id="dismissInstallButton" class="btn ghost" type="button">Später</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 id="pinHeading">PIN festlegen</h2>
+      <p id="pinHelp" class="note">Lege eine eigene PIN mit 4 bis 8 Ziffern fest. Es gibt keinen öffentlichen Standard-PIN.</p>
+
+      <div class="field">
+        <label for="pinInput">PIN</label>
+        <input id="pinInput" type="password" inputmode="numeric" autocomplete="current-password" maxlength="8">
+      </div>
+      <div id="confirmField" class="field">
+        <label for="pinConfirm">PIN wiederholen</label>
+        <input id="pinConfirm" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8">
+      </div>
+      <p id="pinError" class="error" role="alert"></p>
+      <button id="pinButton" class="btn primary">PIN speichern</button>
+
+      <div class="toolbar">
+        <button id="forgotButton" class="btn ghost hidden">PIN vergessen / Daten löschen</button>
+      </div>
+      <p class="note small" style="margin-top:16px">
+        Dieser MVP speichert PIN und Chats nur in diesem Browser. Noch keine echte Online-KI, Bild- oder Videogenerierung.
+      </p>
+    </div>
+  </section>
+
+  <section id="personaScreen" class="screen" aria-labelledby="personaHeading">
+    <div class="top">
+      <div>
+        <h2 id="personaHeading">Wähle deine Begleitung</h2>
+        <p style="margin:4px 0 0">Sechs lokale Demo-Persönlichkeiten</p>
+      </div>
+      <button id="settingsButton" class="btn secondary" aria-label="Einstellungen öffnen">⚙️</button>
+    </div>
+    <div id="personas" class="personas"></div>
+  </section>
+
+  <section id="chatScreen" class="screen" aria-label="Chat">
+    <header class="chatTop">
+      <button id="backButton" class="btn secondary" aria-label="Zurück zur Auswahl">‹ Zurück</button>
+      <div class="chatTitle">
+        <strong id="chatName">Luca AI</strong>
+        <small>Lokale Demo · offline</small>
+      </div>
+      <button id="exportButton" class="btn secondary" aria-label="Chat exportieren">Export</button>
+    </header>
+    <div class="status">Noch keine echte KI verbunden – Nachrichten verlassen dein Gerät nicht.</div>
+    <div id="messages" class="messages" role="log" aria-live="polite"></div>
+    <form id="composer" class="composer">
+      <textarea id="messageInput" rows="1" placeholder="Nachricht schreiben …" aria-label="Nachricht"></textarea>
+      <button class="btn primary" type="submit">Senden</button>
+    </form>
+  </section>
+
+</main>
+
+<dialog id="settingsDialog">
+  <div class="card">
+    <h2>Einstellungen</h2>
+    <p class="note">Hier kannst du lokale Daten verwalten. Eine gelöschte PIN kann nicht wiederhergestellt werden.</p>
+    <div class="row">
+      <button id="clearChatsButton" class="btn ghost">Chats löschen</button>
+      <button id="resetAllButton" class="btn danger">Alles zurücksetzen</button>
+      <button id="closeSettingsButton" class="btn secondary">Schließen</button>
+    </div>
+  </div>
+</dialog>
+
+
+<dialog id="installDialog">
+  <div class="card">
+    <h2>Luca AI auf dem iPad installieren</h2>
+    <ol class="install-steps">
+      <li>Diese Seite in <strong>Safari</strong> öffnen.</li>
+      <li>Oben auf das <strong>Teilen-Symbol</strong> tippen.</li>
+      <li><strong>Zum Home-Bildschirm</strong> auswählen.</li>
+      <li><strong>Als Web-App öffnen</strong> aktivieren und auf <strong>Hinzufügen</strong> tippen.</li>
+      <li>Danach Luca AI wie eine normale App vom Home-Bildschirm starten.</li>
+    </ol>
+    <p class="note">Nach dem ersten vollständigen Laden funktioniert der Demo-Modus auch offline.</p>
+    <button id="closeInstallButton" class="btn primary" type="button">Verstanden</button>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  "use strict";
+
+  const PERSONAS = [
+    {id:"aylin", name:"Aylin", emoji:"🌙", desc:"Ruhig, empathisch und zugewandt", opening:"Hey, ich bin Aylin. Was beschäftigt dich gerade?", prefix:"Ich höre dir in Ruhe zu."},
+    {id:"nova", name:"Nova", emoji:"✨", desc:"Kreativ, verspielt und ideenreich", opening:"Lass uns aus deinem Gedanken etwas Spannendes machen.", prefix:"Da steckt eine interessante Idee drin."},
+    {id:"mina", name:"Mina", emoji:"🌿", desc:"Achtsam, sanft und bodenständig", opening:"Wir können das Schritt für Schritt sortieren.", prefix:"Atmen wir einmal durch und schauen gemeinsam hin."},
+    {id:"juno", name:"Juno", emoji:"🔥", desc:"Direkt, motivierend und energiegeladen", opening:"Okay, los geht’s. Was ist der nächste machbare Schritt?", prefix:"Klartext:"},
+    {id:"liora", name:"Liora", emoji:"🎨", desc:"Fantasievoll, bildhaft und neugierig", opening:"Welche Farbe hätte dein heutiger Gedanke?", prefix:"Ich sehe dabei sofort ein Bild vor mir."},
+    {id:"samira", name:"Samira", emoji:"🧭", desc:"Reflektiert, warm und orientierend", opening:"Lass uns herausfinden, was dir wirklich wichtig ist.", prefix:"Mein erster Eindruck:"}
+  ];
+
+  const $ = id => document.getElementById(id);
+  const screens = ["pinScreen","personaScreen","chatScreen"];
+  let activePersona = null;
+
+  function showScreen(id){
+    screens.forEach(s => $(s).classList.toggle("active", s === id));
+    window.scrollTo(0,0);
+  }
+
+  function bytesToB64(bytes){
+    let binary = "";
+    bytes.forEach(b => binary += String.fromCharCode(b));
+    return btoa(binary);
+  }
+
+  function b64ToBytes(value){
+    const binary = atob(value);
+    return Uint8Array.from(binary, c => c.charCodeAt(0));
+  }
+
+  async function derivePin(pin, salt){
+    if(window.crypto && crypto.subtle){
+      const enc = new TextEncoder();
+      const key = await crypto.subtle.importKey("raw", enc.encode(pin), "PBKDF2", false, ["deriveBits"]);
+      const bits = await crypto.subtle.deriveBits(
+        {name:"PBKDF2", salt, iterations:120000, hash:"SHA-256"},
+        key, 256
+      );
+      return "pbkdf2:" + bytesToB64(new Uint8Array(bits));
+    }
+
+    // Offline-Fallback für Browser, die WebCrypto bei lokalen Dateien sperren.
+    let h1 = 0xdeadbeef ^ pin.length, h2 = 0x41c6ce57 ^ salt.length;
+    const value = pin + ":" + Array.from(salt).join("-");
+    for(let round=0; round<25000; round++){
+      for(let i=0; i<value.length; i++){
+        const ch = value.charCodeAt(i);
+        h1 = Math.imul(h1 ^ ch, 2654435761);
+        h2 = Math.imul(h2 ^ ch, 1597334677);
+      }
+      h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ h2;
+      h2 = Math.imul(h2 ^ (h2 >>> 13), 3266489909) ^ h1;
+    }
+    return "local:" + (h2 >>> 0).toString(16).padStart(8,"0") + (h1 >>> 0).toString(16).padStart(8,"0");
+  }
+
+  function randomSalt(){
+    const salt = new Uint8Array(16);
+    if(window.crypto && crypto.getRandomValues) return crypto.getRandomValues(salt);
+    for(let i=0;i<salt.length;i++) salt[i] = Math.floor(Math.random()*256);
+    return salt;
+  }
+
+  function hasPin(){
+    return !!localStorage.getItem("luca.pin.salt") && !!localStorage.getItem("luca.pin.hash");
+  }
+
+  function configurePinScreen(){
+    const exists = hasPin();
+    $("pinHeading").textContent = exists ? "PIN eingeben" : "PIN festlegen";
+    $("pinSubtitle").textContent = exists ? "Schön, dass du wieder da bist." : "Deine persönliche Begleitung – lokal und offline.";
+    $("pinHelp").textContent = exists
+      ? "Entsperre deine lokal gespeicherten Chats."
+      : "Lege eine eigene PIN mit 4 bis 8 Ziffern fest. Es gibt keinen öffentlichen Standard-PIN.";
+    $("confirmField").classList.toggle("hidden", exists);
+    $("pinButton").textContent = exists ? "Entsperren" : "PIN speichern";
+    $("forgotButton").classList.toggle("hidden", !exists);
+    $("pinInput").value = "";
+    $("pinConfirm").value = "";
+    $("pinError").classList.remove("show");
+  }
+
+  function showPinError(message){
+    $("pinError").textContent = message;
+    $("pinError").classList.add("show");
+  }
+
+  $("pinButton").addEventListener("click", async () => {
+    const pin = $("pinInput").value.trim();
+    if(!/^\d{4,8}$/.test(pin)) return showPinError("Bitte 4 bis 8 Ziffern verwenden.");
+
+    $("pinButton").disabled = true;
+    try{
+      if(hasPin()){
+        const salt = b64ToBytes(localStorage.getItem("luca.pin.salt"));
+        const actual = await derivePin(pin, salt);
+        if(actual !== localStorage.getItem("luca.pin.hash")) return showPinError("Die PIN ist nicht korrekt.");
+        renderPersonas();
+        showScreen("personaScreen");
+      } else {
+        if(pin !== $("pinConfirm").value.trim()) return showPinError("Die beiden PIN-Eingaben stimmen nicht überein.");
+        const salt = randomSalt();
+        const hash = await derivePin(pin, salt);
+        localStorage.setItem("luca.pin.salt", bytesToB64(salt));
+        localStorage.setItem("luca.pin.hash", hash);
+        renderPersonas();
+        showScreen("personaScreen");
+      }
+    } catch(err){
+      showPinError("Die PIN konnte in diesem Browser nicht verarbeitet werden.");
+      console.error(err);
+    } finally {
+      $("pinButton").disabled = false;
+    }
+  });
+
+  $("pinInput").addEventListener("keydown", e => {
+    if(e.key === "Enter") $("pinButton").click();
+  });
+
+  $("forgotButton").addEventListener("click", () => {
+    if(confirm("Wirklich PIN und alle lokalen Chats löschen?")){
+      localStorage.clear();
+      configurePinScreen();
+    }
+  });
+
+  function renderPersonas(){
+    $("personas").innerHTML = "";
+    PERSONAS.forEach(p => {
+      const btn = document.createElement("button");
+      btn.className = "persona";
+      btn.type = "button";
+      btn.innerHTML = `
+        <div class="emoji" aria-hidden="true">${p.emoji}</div>
+        <div><strong>${p.name}</strong><span>${p.desc}</span></div>
+        <div class="arrow" aria-hidden="true">›</div>`;
+      btn.addEventListener("click", () => openChat(p));
+      $("personas").appendChild(btn);
+    });
+  }
+
+  function chatKey(id){ return "luca.chat." + id; }
+
+  function loadChat(id){
+    try { return JSON.parse(localStorage.getItem(chatKey(id)) || "[]"); }
+    catch { return []; }
+  }
+
+  function saveChat(id, messages){
+    localStorage.setItem(chatKey(id), JSON.stringify(messages.slice(-100)));
+  }
+
+  function openChat(persona){
+    activePersona = persona;
+    $("chatName").textContent = `${persona.emoji} ${persona.name}`;
+    let chat = loadChat(persona.id);
+    if(chat.length === 0){
+      chat = [{role:"assistant", text:persona.opening, time:Date.now()}];
+      saveChat(persona.id, chat);
+    }
+    renderMessages(chat);
+    showScreen("chatScreen");
+    setTimeout(() => $("messageInput").focus(), 80);
+  }
+
+  function renderMessages(chat){
+    $("messages").innerHTML = "";
+    chat.forEach(addMessageElement);
+    requestAnimationFrame(() => $("messages").scrollTop = $("messages").scrollHeight);
+  }
+
+  function addMessageElement(m){
+    const row = document.createElement("div");
+    row.className = "msg " + (m.role === "user" ? "user" : "assistant");
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = m.text;
+    row.appendChild(bubble);
+    $("messages").appendChild(row);
+  }
+
+  function localReply(text, p){
+    const t = text.toLowerCase();
+    if(/\b(stress|überfordert|chaos|zu viel)\b/.test(t)) return `${p.prefix} Lass uns nur den nächsten kleinen Schritt nehmen: Was muss heute wirklich passieren?`;
+    if(/\b(kita|kinder|erzieher|pia)\b/.test(t)) return `${p.prefix} Für eine pädagogische Antwort würde ich zuerst Situation, Beobachtung, Ziel und Handlung sauber trennen.`;
+    if(/\b(hallo|hi|hey|moin)\b/.test(t)) return `${p.prefix} Schön, dass du da bist. Womit möchtest du anfangen?`;
+    if(/\b(gitarre|akkord|musik)\b/.test(t)) return `${p.prefix} Nimm dir fünf ruhige Minuten: ein Akkordwechsel, langsam und sauber, dann ein kurzer Rhythmus.`;
+    if(/\b(danke|gut|super)\b/.test(t)) return `${p.prefix} Sehr gern. Du musst nicht alles auf einmal lösen.`;
+    return `${p.prefix} Du hast geschrieben: „${text}“\n\nDer Chatablauf funktioniert bereits lokal. Eine echte KI-Antwort wird später über ein sicheres Backend angebunden.`;
+  }
+
+  $("composer").addEventListener("submit", e => {
+    e.preventDefault();
+    const text = $("messageInput").value.trim();
+    if(!text || !activePersona) return;
+
+    const chat = loadChat(activePersona.id);
+    const user = {role:"user", text, time:Date.now()};
+    chat.push(user);
+    addMessageElement(user);
+    $("messageInput").value = "";
+    saveChat(activePersona.id, chat);
+    $("messages").scrollTop = $("messages").scrollHeight;
+
+    setTimeout(() => {
+      const current = loadChat(activePersona.id);
+      const reply = {role:"assistant", text:localReply(text, activePersona), time:Date.now()};
+      current.push(reply);
+      saveChat(activePersona.id, current);
+      addMessageElement(reply);
+      $("messages").scrollTop = $("messages").scrollHeight;
+    }, 320);
+  });
+
+  $("messageInput").addEventListener("keydown", e => {
+    if(e.key === "Enter" && !e.shiftKey){
+      e.preventDefault();
+      $("composer").requestSubmit();
+    }
+  });
+
+  $("backButton").addEventListener("click", () => {
+    activePersona = null;
+    showScreen("personaScreen");
+  });
+
+  $("exportButton").addEventListener("click", () => {
+    if(!activePersona) return;
+    const chat = loadChat(activePersona.id);
+    const text = chat.map(m => `${m.role === "user" ? "Du" : activePersona.name}: ${m.text}`).join("\n\n");
+    const blob = new Blob([text], {type:"text/plain;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `LucaAI-${activePersona.name}-Chat.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+
+  const isStandalone = () =>
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true;
+
+  function configureInstallHint(){
+    const dismissed = localStorage.getItem("luca.install.dismissed") === "1";
+    $("installHint").classList.toggle("show", !isStandalone() && !dismissed);
+  }
+
+  const installDialog = $("installDialog");
+  $("installHelpButton").addEventListener("click", () => installDialog.showModal());
+  $("closeInstallButton").addEventListener("click", () => installDialog.close());
+  $("dismissInstallButton").addEventListener("click", () => {
+    localStorage.setItem("luca.install.dismissed", "1");
+    configureInstallHint();
+  });
+
+
+  const dialog = $("settingsDialog");
+  $("settingsButton").addEventListener("click", () => dialog.showModal());
+  $("closeSettingsButton").addEventListener("click", () => dialog.close());
+
+  $("clearChatsButton").addEventListener("click", () => {
+    if(confirm("Alle lokalen Chats löschen?")){
+      PERSONAS.forEach(p => localStorage.removeItem(chatKey(p.id)));
+      dialog.close();
+    }
+  });
+
+  $("resetAllButton").addEventListener("click", () => {
+    if(confirm("PIN, Einstellungen und alle Chats vollständig löschen?")){
+      localStorage.clear();
+      dialog.close();
+      configurePinScreen();
+      showScreen("pinScreen");
+    }
+  });
+
+  window.addEventListener("load", () => {
+    configurePinScreen();
+    configureInstallHint();
+    if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+      navigator.serviceWorker.register("sw.js").catch(console.warn);
+    }
+  });
+})();
+</script>
+</body>
+</html>
